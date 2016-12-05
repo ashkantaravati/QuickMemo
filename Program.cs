@@ -36,7 +36,7 @@ namespace QuickMemo
             }
             
         }
-        static void Ls()
+        static void ListAll()
         {
 
             Console.WriteLine("Listing all memos...");
@@ -57,7 +57,25 @@ namespace QuickMemo
 
             }
         }
-        static void Prompt(ref string variable)
+        static void Remove()
+        {
+            string entry = "";
+            Console.WriteLine("enter memo id to remove");
+            Prompt(ref entry);
+            // Open database (or create if doesn't exist)
+            using (var db = new LiteDatabase(@"C:\QuickMemo\MyData.db"))
+            {
+                // Get a collection (or create, if doesn't exist)
+                var col = db.GetCollection<Memo>("Memo");
+
+                
+                col.Delete(x => x.Id == int.Parse(entry));
+
+
+            }
+            Console.WriteLine("Memo was deleted successfully!");
+        }
+            static void Prompt(ref string variable)
         {
             Console.Write(">>");
             variable = Console.ReadLine();
@@ -67,6 +85,7 @@ namespace QuickMemo
             Console.WriteLine("Here's the list of commands you can use:");
             Console.WriteLine("new: Gets a new memo and inserts into database.");
             Console.WriteLine("ls: Lists all memos.");
+            Console.WriteLine("remove: removes a specific memo by Id.");
             Console.WriteLine("clear: Clears the screen.");
             Console.WriteLine("exit: exits QuickMemo.");
         }
@@ -91,7 +110,7 @@ namespace QuickMemo
                         }
                     case "ls":
                         {
-                            Ls();
+                            ListAll();
                             break;
                         }
                     case "help":
@@ -107,6 +126,11 @@ namespace QuickMemo
                     case "clear":
                         {
                             Console.Clear();
+                            break;
+                        }
+                    case "remove":
+                        {
+                            Remove();
                             break;
                         }
                     default:
